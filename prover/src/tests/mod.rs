@@ -5,7 +5,7 @@
 
 use crate::TraceTable;
 use air::{
-    Air, AirContext, Assertion, EvaluationFrame, FieldExtension, HashFunction, ProofOptions,
+    Air, AirContext, Assertion, DefaultEvaluationFrame, FieldExtension, HashFunction, ProofOptions,
     TraceInfo, TransitionConstraintDegree,
 };
 use math::{fields::f128::BaseElement, FieldElement, StarkField};
@@ -97,9 +97,11 @@ impl MockAir {
 impl Air for MockAir {
     type BaseField = BaseElement;
     type PublicInputs = ();
+    type Frame<E: FieldElement> = DefaultEvaluationFrame<E>;
+    type AuxFrame<E: FieldElement> = DefaultEvaluationFrame<E>;
 
     fn new(trace_info: TraceInfo, _pub_inputs: (), _options: ProofOptions) -> Self {
-        let context = build_context(trace_info, 8);
+        let context = build_context(trace_info, 8, 1);
         MockAir {
             context,
             assertions: Vec::new(),
@@ -113,7 +115,7 @@ impl Air for MockAir {
 
     fn evaluate_transition<E: FieldElement + From<Self::BaseField>>(
         &self,
-        _frame: &EvaluationFrame<E>,
+        _frame: &Self::Frame<E>,
         _periodic_values: &[E],
         _result: &mut [E],
     ) {
@@ -131,7 +133,11 @@ impl Air for MockAir {
 // HELPER FUNCTIONS
 // ================================================================================================
 
-fn build_context<B: StarkField>(trace_info: TraceInfo, blowup_factor: usize) -> AirContext<B> {
+fn build_context<B: StarkField>(
+    trace_info: TraceInfo,
+    blowup_factor: usize,
+    num_assertions: usize,
+) -> AirContext<B> {
     let options = ProofOptions::new(
         32,
         blowup_factor,
@@ -142,5 +148,5 @@ fn build_context<B: StarkField>(trace_info: TraceInfo, blowup_factor: usize) -> 
         256,
     );
     let t_degrees = vec![TransitionConstraintDegree::new(2)];
-    AirContext::new(trace_info, t_degrees, options)
+    AirContext::new(trace_info, t_degrees, num_assertions, options)
 }

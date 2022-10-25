@@ -27,6 +27,7 @@
 //! This crate also contains components describing STARK protocol parameters ([ProofOptions]) and
 //! proof structure ([StarkProof](proof::StarkProof)).
 
+#![feature(generic_associated_types)]
 #![cfg_attr(not(feature = "std"), no_std)]
 
 #[cfg(not(feature = "std"))]
@@ -41,9 +42,13 @@ pub use errors::AssertionError;
 mod options;
 pub use options::{FieldExtension, HashFunction, ProofOptions};
 
+mod table;
+pub use table::Table;
+
 mod air;
 pub use air::{
-    Air, AirContext, Assertion, BoundaryConstraint, BoundaryConstraintGroup,
-    ConstraintCompositionCoefficients, ConstraintDivisor, DeepCompositionCoefficients,
-    EvaluationFrame, TraceInfo, TransitionConstraintDegree, TransitionConstraintGroup,
+    Air, AirContext, Assertion, AuxTraceRandElements, BoundaryConstraint, BoundaryConstraintGroup,
+    BoundaryConstraints, ConstraintCompositionCoefficients, ConstraintDivisor,
+    DeepCompositionCoefficients, DefaultEvaluationFrame, EvaluationFrame, TraceInfo, TraceLayout,
+    TransitionConstraintDegree, TransitionConstraintGroup, TransitionConstraints,
 };

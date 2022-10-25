@@ -6,6 +6,7 @@
 //! This crate contains utility traits, functions, and macros used by other crates of Winterfell
 //! STARK prover and verifier.
 
+#![feature(generic_associated_types)]
 #![cfg_attr(not(feature = "std"), no_std)]
 
 #[cfg(not(feature = "std"))]
@@ -612,4 +613,43 @@ impl Randomizable for u64 {
             None
         }
     }
+}
+
+impl Randomizable for u32 {
+    const VALUE_SIZE: usize = 4;
+
+    fn from_random_bytes(source: &[u8]) -> Option<Self> {
+        if let Ok(bytes) = source[..Self::VALUE_SIZE].try_into() {
+            Some(u32::from_le_bytes(bytes))
+        } else {
+            None
+        }
+    }
+}
+
+impl Randomizable for u16 {
+    const VALUE_SIZE: usize = 2;
+
+    fn from_random_bytes(source: &[u8]) -> Option<Self> {
+        if let Ok(bytes) = source[..Self::VALUE_SIZE].try_into() {
+            Some(u16::from_le_bytes(bytes))
+        } else {
+            None
+        }
+    }
+}
+
+impl Randomizable for u8 {
+    const VALUE_SIZE: usize = 1;
+
+    fn from_random_bytes(source: &[u8]) -> Option<Self> {
+        Some(source[0])
+    }
+}
+
+pub trait TableReader<E> {
+    fn num_cols(&self) -> usize;
+    fn num_rows(&self) -> usize;
+
+    fn get(&self, col_idx: usize, row_idx: usize) -> E;
 }
