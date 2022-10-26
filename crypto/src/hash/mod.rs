@@ -10,6 +10,9 @@ use utils::{ByteReader, Deserializable, DeserializationError, Serializable};
 mod blake;
 pub use blake::{Blake3_192, Blake3_256};
 
+mod blake2b;
+pub use blake2b::{Blake2b_256};
+
 mod sha;
 pub use sha::Sha3_256;
 

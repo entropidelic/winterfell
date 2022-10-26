@@ -52,7 +52,7 @@ pub use utils::{
 
 pub use crypto;
 use crypto::{
-    hashers::{Blake3_192, Blake3_256, Sha3_256},
+    hashers::{Blake3_192, Blake3_256, Sha3_256, Blake2b_256},
     ElementHasher, RandomCoin,
 };
 
@@ -117,6 +117,11 @@ pub fn verify<AIR: Air>(
                 let channel = VerifierChannel::new(&air, proof)?;
                 perform_verification::<AIR, AIR::BaseField, Sha3_256<AIR::BaseField>>(air, channel, public_coin)
             }
+            HashFunction::Blake2b_256 => {
+                let public_coin = RandomCoin::new(&public_coin_seed);
+                let channel = VerifierChannel::new(&air, proof)?;
+                perform_verification::<AIR, AIR::BaseField, Blake2b_256<AIR::BaseField>>(air, channel, public_coin)
+            }
         },
         FieldExtension::Quadratic => {
             if !<QuadExtension<AIR::BaseField>>::is_supported() {
@@ -137,6 +142,11 @@ pub fn verify<AIR: Air>(
                     let public_coin = RandomCoin::new(&public_coin_seed);
                     let channel = VerifierChannel::new(&air, proof)?;
                     perform_verification::<AIR, QuadExtension<AIR::BaseField>, Sha3_256<AIR::BaseField>>(air, channel, public_coin)
+                }
+                HashFunction::Blake2b_256 => {
+                    let public_coin = RandomCoin::new(&public_coin_seed);
+                    let channel = VerifierChannel::new(&air, proof)?;
+                    perform_verification::<AIR, QuadExtension<AIR::BaseField>, Blake2b_256<AIR::BaseField>>(air, channel, public_coin)
                 }
             }
         },
@@ -159,6 +169,11 @@ pub fn verify<AIR: Air>(
                     let public_coin = RandomCoin::new(&public_coin_seed);
                     let channel = VerifierChannel::new(&air, proof)?;
                     perform_verification::<AIR, CubeExtension<AIR::BaseField>, Sha3_256<AIR::BaseField>>(air, channel, public_coin)
+                }
+                HashFunction::Blake2b_256 => {
+                    let public_coin = RandomCoin::new(&public_coin_seed);
+                    let channel = VerifierChannel::new(&air, proof)?;
+                    perform_verification::<AIR, CubeExtension<AIR::BaseField>, Blake2b_256<AIR::BaseField>>(air, channel, public_coin)
                 }
             }
         },

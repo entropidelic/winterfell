@@ -7,10 +7,10 @@ use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion};
 use math::fields::f128::BaseElement;
 use rand_utils::rand_value;
 use utils::uninit_vector;
-use winter_crypto::{build_merkle_nodes, concurrent, hashers::Blake3_256, Hasher};
+use winter_crypto::{build_merkle_nodes, concurrent, hashers::Blake2b_256, Hasher};
 
-type Blake3 = Blake3_256<BaseElement>;
-type Blake3Digest = <Blake3 as Hasher>::Digest;
+type Blake2b = Blake2b_256<BaseElement>;
+type Blake2bDigest = <Blake2b as Hasher>::Digest;
 
 pub fn merkle_tree_construction(c: &mut Criterion) {
     let mut merkle_group = c.benchmark_group("merkle tree construction");
@@ -18,18 +18,18 @@ pub fn merkle_tree_construction(c: &mut Criterion) {
     static BATCH_SIZES: [usize; 3] = [65536, 131072, 262144];
 
     for size in &BATCH_SIZES {
-        let data: Vec<Blake3Digest> = {
+        let data: Vec<Blake2bDigest> = {
             let mut res = unsafe { uninit_vector(*size) };
             for i in 0..*size {
-                res[i] = Blake3::hash(&rand_value::<u128>().to_le_bytes());
+                res[i] = Blake2b::hash(&rand_value::<u128>().to_le_bytes());
             }
             res
         };
         merkle_group.bench_with_input(BenchmarkId::new("sequential", size), &data, |b, i| {
-            b.iter(|| build_merkle_nodes::<Blake3>(&i))
+            b.iter(|| build_merkle_nodes::<Blake2b>(&i))
         });
         merkle_group.bench_with_input(BenchmarkId::new("concurrent", size), &data, |b, i| {
-            b.iter(|| concurrent::build_merkle_nodes::<Blake3>(&i))
+            b.iter(|| concurrent::build_merkle_nodes::<Blake2b>(&i))
         });
     }
 }

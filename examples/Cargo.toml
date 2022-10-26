@@ -32,6 +32,7 @@ rand-utils = { version = "0.4", path = "../utils/rand", package = "winter-rand-u
 hex = { version = "0.4", optional = true }
 log = { version = "0.4", default-features = false }
 blake3 = { version = "1.0", default-features = false }
+blake2 = { package = "blake2-rfc", version = "0.2"}
 env_logger = { version = "0.9", default-features = false }
 structopt = { version = "0.3", default-features = false }
 

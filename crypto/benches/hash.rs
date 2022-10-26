@@ -7,12 +7,15 @@ use criterion::{black_box, criterion_group, criterion_main, BatchSize, Criterion
 use math::fields::f128;
 use rand_utils::rand_value;
 use winter_crypto::{
-    hashers::{Blake3_256, Rp62_248, Rp64_256, Sha3_256},
+    hashers::{Blake3_256, Blake2b_256, Rp62_248, Rp64_256, Sha3_256},
     Hasher,
 };
 
 type Blake3 = Blake3_256<f128::BaseElement>;
 type Blake3Digest = <Blake3 as Hasher>::Digest;
+
+type Blake2b = Blake3_256<f128::BaseElement>;
+type Blake2bDigest = <Blake3 as Hasher>::Digest;
 
 type Sha3 = Sha3_256<f128::BaseElement>;
 type Sha3Digest = <Sha3 as Hasher>::Digest;
@@ -35,6 +38,26 @@ fn blake3(c: &mut Criterion) {
                 ]
             },
             |state| Blake3::merge(&state),
+            BatchSize::SmallInput,
+        )
+    });
+}
+
+fn blake2b(c: &mut Criterion) {
+    let v: [Blake2bDigest; 2] = [Blake2b::hash(&[1u8]), Blake2b::hash(&[2u8])];
+    c.bench_function("hash_blake2b (cached)", |bench| {
+        bench.iter(|| Blake2b::merge(black_box(&v)))
+    });
+
+    c.bench_function("hash_blake2b (random)", |b| {
+        b.iter_batched(
+            || {
+                [
+                    Blake2b::hash(&rand_value::<u64>().to_le_bytes()),
+                    Blake2b::hash(&rand_value::<u64>().to_le_bytes()),
+                ]
+            },
+            |state| Blake2b::merge(&state),
             BatchSize::SmallInput,
         )
     });

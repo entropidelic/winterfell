@@ -8,7 +8,7 @@ use math::fields::f128::BaseElement;
 use proptest::prelude::*;
 
 type Digest256 = crate::hash::ByteDigest<32>;
-type Blake3_256 = crate::hash::Blake3_256<BaseElement>;
+type Blake2b_256 = crate::hash::Blake2b_256<BaseElement>;
 
 static LEAVES4: [[u8; 32]; 4] = [
     [
@@ -67,7 +67,7 @@ static LEAVES8: [[u8; 32]; 8] = [
 #[test]
 fn new_tree() {
     let leaves = Digest256::bytes_as_digests(&LEAVES4).to_vec();
-    let tree = MerkleTree::<Blake3_256>::new(leaves.clone()).unwrap();
+    let tree = MerkleTree::<Blake2b_256>::new(leaves.clone()).unwrap();
     assert_eq!(2, tree.depth());
     let root = hash_2x1(
         hash_2x1(leaves[0], leaves[1]),
@@ -76,7 +76,7 @@ fn new_tree() {
     assert_eq!(&root, tree.root());
 
     let leaves = Digest256::bytes_as_digests(&LEAVES8).to_vec();
-    let tree = MerkleTree::<Blake3_256>::new(leaves.clone()).unwrap();
+    let tree = MerkleTree::<Blake2b_256>::new(leaves.clone()).unwrap();
     assert_eq!(3, tree.depth());
     let root = hash_2x1(
         hash_2x1(
@@ -95,7 +95,7 @@ fn new_tree() {
 fn prove() {
     // depth 4
     let leaves = Digest256::bytes_as_digests(&LEAVES4).to_vec();
-    let tree = MerkleTree::<Blake3_256>::new(leaves.clone()).unwrap();
+    let tree = MerkleTree::<Blake2b_256>::new(leaves.clone()).unwrap();
 
     let proof = vec![leaves[1], leaves[0], hash_2x1(leaves[2], leaves[3])];
     assert_eq!(proof, tree.prove(1).unwrap());
@@ -105,7 +105,7 @@ fn prove() {
 
     // depth 5
     let leaves = Digest256::bytes_as_digests(&LEAVES8).to_vec();
-    let tree = MerkleTree::<Blake3_256>::new(leaves.clone()).unwrap();
+    let tree = MerkleTree::<Blake2b_256>::new(leaves.clone()).unwrap();
 
     let proof = vec![
         leaves[1],
@@ -134,27 +134,27 @@ fn prove() {
 fn verify() {
     // depth 4
     let leaves = Digest256::bytes_as_digests(&LEAVES4).to_vec();
-    let tree = MerkleTree::<Blake3_256>::new(leaves).unwrap();
+    let tree = MerkleTree::<Blake2b_256>::new(leaves).unwrap();
     let proof = tree.prove(1).unwrap();
-    assert!(MerkleTree::<Blake3_256>::verify(*tree.root(), 1, &proof).is_ok());
+    assert!(MerkleTree::<Blake2b_256>::verify(*tree.root(), 1, &proof).is_ok());
 
     let proof = tree.prove(2).unwrap();
-    assert!(MerkleTree::<Blake3_256>::verify(*tree.root(), 2, &proof).is_ok());
+    assert!(MerkleTree::<Blake2b_256>::verify(*tree.root(), 2, &proof).is_ok());
 
     // depth 5
     let leaves = Digest256::bytes_as_digests(&LEAVES8).to_vec();
-    let tree = MerkleTree::<Blake3_256>::new(leaves).unwrap();
+    let tree = MerkleTree::<Blake2b_256>::new(leaves).unwrap();
     let proof = tree.prove(1).unwrap();
-    assert!(MerkleTree::<Blake3_256>::verify(*tree.root(), 1, &proof).is_ok());
+    assert!(MerkleTree::<Blake2b_256>::verify(*tree.root(), 1, &proof).is_ok());
 
     let proof = tree.prove(6).unwrap();
-    assert!(MerkleTree::<Blake3_256>::verify(*tree.root(), 6, &proof).is_ok());
+    assert!(MerkleTree::<Blake2b_256>::verify(*tree.root(), 6, &proof).is_ok());
 }
 
 #[test]
 fn prove_batch() {
     let leaves = Digest256::bytes_as_digests(&LEAVES8).to_vec();
-    let tree = MerkleTree::<Blake3_256>::new(leaves.clone()).unwrap();
+    let tree = MerkleTree::<Blake2b_256>::new(leaves.clone()).unwrap();
 
     // 1 index
     let proof = tree.prove_batch(&[1]).unwrap();
@@ -210,7 +210,7 @@ fn prove_batch() {
 #[test]
 fn verify_batch() {
     let leaves = Digest256::bytes_as_digests(&LEAVES8).to_vec();
-    let tree = MerkleTree::<Blake3_256>::new(leaves).unwrap();
+    let tree = MerkleTree::<Blake2b_256>::new(leaves).unwrap();
 
     let proof = tree.prove_batch(&[1]).unwrap();
     assert!(MerkleTree::verify_batch(tree.root(), &[1], &proof).is_ok());
@@ -239,7 +239,7 @@ proptest! {
     )  {
         for proof_index in proof_indices{
             let proof = tree.prove(proof_index.index(128)).unwrap();
-            prop_assert!(MerkleTree::<Blake3_256>::verify(*tree.root(), proof_index.index(128), &proof).is_ok())
+            prop_assert!(MerkleTree::<Blake2b_256>::verify(*tree.root(), proof_index.index(128), &proof).is_ok())
         }
     }
 
@@ -274,14 +274,14 @@ proptest! {
 // HELPER FUNCTIONS
 // --------------------------------------------------------------------------------------------
 fn hash_2x1(v1: Digest256, v2: Digest256) -> Digest256 {
-    Blake3_256::merge(&[v1, v2])
+    Blake2b_256::merge(&[v1, v2])
 }
 
 pub fn random_blake3_merkle_tree(
     leave_count: usize,
-) -> impl Strategy<Value = MerkleTree<Blake3_256>> {
+) -> impl Strategy<Value = MerkleTree<Blake2b_256>> {
     prop::collection::vec(any::<[u8; 32]>(), leave_count).prop_map(|leaves| {
         let leaves = Digest256::bytes_as_digests(&leaves).to_vec();
-        MerkleTree::<Blake3_256>::new(leaves).unwrap()
+        MerkleTree::<Blake2b_256>::new(leaves).unwrap()
     })
 }
