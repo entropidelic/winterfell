@@ -7,9 +7,9 @@ use super::{ByteDigest, ElementHasher, Hasher};
 use core::{convert::TryInto, fmt::Debug, marker::PhantomData};
 use math::{FieldElement, StarkField};
 use utils::ByteWriter;
-//use blake2::{Blake2b};
-//use blake2::blake2b::blake2b;
-use blake2::blake2b::{Blake2b, blake2b};
+//use blake2::{Blake2s};
+//use blake2::blake2s::blake2s;
+use blake2::blake2s::{Blake2s, blake2s};
 // use blake2::as_bytes::AsBytes;
 
 
@@ -17,38 +17,38 @@ use blake2::blake2b::{Blake2b, blake2b};
 mod tests;
 
 
-fn blake2b_hash(bytes: &[u8]) ->  [u8; 32] {
-    return blake2b(32, &[], bytes).as_bytes().try_into().expect("slice with incorrect length")
+fn blake2s_hash(bytes: &[u8]) ->  [u8; 32] {
+    return blake2s(32, &[], bytes).as_bytes().try_into().expect("slice with incorrect length")
 }
 
-// BLAKE2b 256-BIT OUTPUT
+// BLAKE2s 256-BIT OUTPUT
 // ================================================================================================
 
-/// Implementation of the [Hasher](super::Hasher) trait for BLAKE2b hash function with 256-bit
+/// Implementation of the [Hasher](super::Hasher) trait for BLAKE2s hash function with 256-bit
 /// output.
 #[derive(Debug, PartialEq, Eq)]
-pub struct Blake2b_256<B: StarkField>(PhantomData<B>);
+pub struct Blake2s_256<B: StarkField>(PhantomData<B>);
 
-impl<B: StarkField> Hasher for Blake2b_256<B> {
+impl<B: StarkField> Hasher for Blake2s_256<B> {
     type Digest = ByteDigest<32>;
 
     fn hash(bytes: &[u8]) -> Self::Digest {
-        ByteDigest(blake2b_hash(bytes))
+        ByteDigest(blake2s_hash(bytes))
     }
 
     fn merge(values: &[Self::Digest; 2]) -> Self::Digest {
-        ByteDigest(blake2b_hash(ByteDigest::digests_as_bytes(values)).into())
+        ByteDigest(blake2s_hash(ByteDigest::digests_as_bytes(values)).into())
     }
 
     fn merge_with_int(seed: Self::Digest, value: u64) -> Self::Digest {
         let mut data = [0; 40];
         data[..32].copy_from_slice(&seed.0);
         data[32..].copy_from_slice(&value.to_le_bytes());
-        ByteDigest(blake2b_hash(&data))
+        ByteDigest(blake2s_hash(&data))
     }
 }
 
-impl<B: StarkField> ElementHasher for Blake2b_256<B> {
+impl<B: StarkField> ElementHasher for Blake2s_256<B> {
     type BaseField = B;
 
     fn hash_elements<E: FieldElement<BaseField = Self::BaseField>>(elements: &[E]) -> Self::Digest {
@@ -56,35 +56,35 @@ impl<B: StarkField> ElementHasher for Blake2b_256<B> {
             // when element's internal and canonical representations are the same, we can hash
             // element bytes directly
             let bytes = E::elements_as_bytes(elements);
-            ByteDigest(blake2b_hash(bytes))
+            ByteDigest(blake2s_hash(bytes))
         } else {
             // when elements' internal and canonical representations differ, we need to serialize
             // them before hashing
-            let mut hasher = Blake2bHasher::new();
+            let mut hasher = Blake2sHasher::new();
             hasher.write(elements);
             ByteDigest(hasher.finalize())
         }
     }
 }
 
-// BLAKE2b 192-BIT OUTPUT
+// BLAKE2s 192-BIT OUTPUT
 // ================================================================================================
 
-/// Implementation of the [Hasher](super::Hasher) trait for BLAKE2b hash function with 192-bit
+/// Implementation of the [Hasher](super::Hasher) trait for BLAKE2s hash function with 192-bit
 /// output.
 #[derive(Debug, PartialEq, Eq)]
-pub struct Blake2b_192<B: StarkField>(PhantomData<B>);
+pub struct Blake2s_192<B: StarkField>(PhantomData<B>);
 
-impl<B: StarkField> Hasher for Blake2b_192<B> {
+impl<B: StarkField> Hasher for Blake2s_192<B> {
     type Digest = ByteDigest<24>;
 
     fn hash(bytes: &[u8]) -> Self::Digest {
-        let result = blake2b_hash(bytes);
+        let result = blake2s_hash(bytes);
         ByteDigest(result[..24].try_into().unwrap())
     }
 
     fn merge(values: &[Self::Digest; 2]) -> Self::Digest {
-        let result = blake2b_hash(ByteDigest::digests_as_bytes(values));
+        let result = blake2s_hash(ByteDigest::digests_as_bytes(values));
         ByteDigest(result[..24].try_into().unwrap())
     }
 
@@ -93,12 +93,12 @@ impl<B: StarkField> Hasher for Blake2b_192<B> {
         data[..24].copy_from_slice(&seed.0);
         data[24..].copy_from_slice(&value.to_le_bytes());
 
-        let result = blake2b_hash(&data);
+        let result = blake2s_hash(&data);
         ByteDigest(result[..24].try_into().unwrap())
     }
 }
 
-impl<B: StarkField> ElementHasher for Blake2b_192<B> {
+impl<B: StarkField> ElementHasher for Blake2s_192<B> {
     type BaseField = B;
 
     fn hash_elements<E: FieldElement<BaseField = Self::BaseField>>(elements: &[E]) -> Self::Digest {
@@ -106,12 +106,12 @@ impl<B: StarkField> ElementHasher for Blake2b_192<B> {
             // when element's internal and canonical representations are the same, we can hash
             // element bytes directly
             let bytes = E::elements_as_bytes(elements);
-            let result = blake2b_hash(bytes);
+            let result = blake2s_hash(bytes);
             ByteDigest(result[..24].try_into().unwrap())
         } else {
             // when elements' internal and canonical representations differ, we need to serialize
             // them before hashing
-            let mut hasher = Blake2bHasher::new();
+            let mut hasher = Blake2sHasher::new();
             hasher.write(elements);
             let result = hasher.finalize();
             ByteDigest(result[..24].try_into().unwrap())
@@ -122,12 +122,12 @@ impl<B: StarkField> ElementHasher for Blake2b_192<B> {
 // BLAKE HASHER
 // ================================================================================================
 
-/// Wrapper around BLAKE2b hasher to implement [ByteWriter] trait for it.
-struct Blake2bHasher(Blake2b);
+/// Wrapper around BLAKE2s hasher to implement [ByteWriter] trait for it.
+struct Blake2sHasher(Blake2s);
 
-impl Blake2bHasher {
+impl Blake2sHasher {
     pub fn new() -> Self {
-        Self(Blake2b::new(32))
+        Self(Blake2s::new(32))
     }
 
     pub fn finalize(&self) -> [u8; 32] {
@@ -137,7 +137,7 @@ impl Blake2bHasher {
     }
 }
 
-impl ByteWriter for Blake2bHasher {
+impl ByteWriter for Blake2sHasher {
     fn write_u8(&mut self, value: u8) {
         self.0.update(&[value]);
     }

@@ -68,7 +68,7 @@ use math::{
 
 pub use crypto;
 use crypto::{
-    hashers::{Blake3_192, Blake3_256, Blake2b_256, Sha3_256},
+    hashers::{Blake3_192, Blake3_256, Blake2s_256, Sha3_256},
     ElementHasher, MerkleTree,
 };
 
@@ -165,7 +165,7 @@ pub trait Prover {
         match self.options().field_extension() {
             FieldExtension::None => match self.options().hash_fn() {
                 HashFunction::Blake3_256 => self.generate_proof::<Self::BaseField, Blake3_256<Self::BaseField>>(trace),
-                HashFunction::Blake2b_256 => self.generate_proof::<Self::BaseField, Blake2b_256<Self::BaseField>>(trace),
+                HashFunction::Blake2s_256 => self.generate_proof::<Self::BaseField, Blake2s_256<Self::BaseField>>(trace),
                 HashFunction::Blake3_192 => self.generate_proof::<Self::BaseField, Blake3_192<Self::BaseField>>(trace),
                 HashFunction::Sha3_256 => self.generate_proof::<Self::BaseField, Sha3_256<Self::BaseField>>(trace),
             },
@@ -175,7 +175,7 @@ pub trait Prover {
                 }
                 match self.options().hash_fn() {
                     HashFunction::Blake3_256 => self.generate_proof::<QuadExtension<Self::BaseField>, Blake3_256<Self::BaseField>>(trace),
-                    HashFunction::Blake2b_256 => self.generate_proof::<QuadExtension<Self::BaseField>, Blake2b_256<Self::BaseField>>(trace),
+                    HashFunction::Blake2s_256 => self.generate_proof::<QuadExtension<Self::BaseField>, Blake2s_256<Self::BaseField>>(trace),
                     HashFunction::Blake3_192 => self.generate_proof::<QuadExtension<Self::BaseField>, Blake3_192<Self::BaseField>>(trace),
                     HashFunction::Sha3_256 => self.generate_proof::<QuadExtension<Self::BaseField>, Sha3_256<Self::BaseField>>(trace),
                 }
@@ -186,7 +186,7 @@ pub trait Prover {
                 }
                 match self.options().hash_fn() {
                     HashFunction::Blake3_256 => self.generate_proof::<CubeExtension<Self::BaseField>, Blake3_256<Self::BaseField>>(trace),
-                    HashFunction::Blake2b_256 => self.generate_proof::<CubeExtension<Self::BaseField>, Blake2b_256<Self::BaseField>>(trace),
+                    HashFunction::Blake2s_256 => self.generate_proof::<CubeExtension<Self::BaseField>, Blake2s_256<Self::BaseField>>(trace),
                     HashFunction::Blake3_192 => self.generate_proof::<CubeExtension<Self::BaseField>, Blake3_192<Self::BaseField>>(trace),
                     HashFunction::Sha3_256 => self.generate_proof::<CubeExtension<Self::BaseField>, Sha3_256<Self::BaseField>>(trace),
                 }

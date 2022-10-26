@@ -8,11 +8,11 @@ use crate::{
     verifier::{DefaultVerifierChannel, FriVerifier},
     FriOptions, FriProof, VerifierError,
 };
-use crypto::{hashers::Blake2b_256, Hasher, RandomCoin};
+use crypto::{hashers::Blake2s_256, Hasher, RandomCoin};
 use math::{fft, fields::f128::BaseElement, FieldElement};
 use utils::{collections::Vec, Deserializable, Serializable, SliceReader};
 
-type Blake2b = Blake2b_256<BaseElement>;
+type Blake2s = Blake2s_256<BaseElement>;
 
 // PROVE/VERIFY TEST
 // ================================================================================================
@@ -65,7 +65,7 @@ fn fri_prove_verify() {
 pub fn build_prover_channel(
     trace_length: usize,
     options: &FriOptions,
-) -> DefaultProverChannel<BaseElement, BaseElement, Blake2b> {
+) -> DefaultProverChannel<BaseElement, BaseElement, Blake2s> {
     DefaultProverChannel::new(trace_length * options.blowup_factor(), 32)
 }
 
@@ -84,7 +84,7 @@ pub fn build_evaluations(trace_length: usize, lde_blowup: usize) -> Vec<BaseElem
 
 pub fn verify_proof(
     proof: FriProof,
-    commitments: Vec<<Blake2b as Hasher>::Digest>,
+    commitments: Vec<<Blake2s as Hasher>::Digest>,
     evaluations: &[BaseElement],
     max_degree: usize,
     domain_size: usize,
@@ -99,14 +99,14 @@ pub fn verify_proof(
     let proof = FriProof::read_from(&mut reader).unwrap();
 
     // verify the proof
-    let mut channel = DefaultVerifierChannel::<BaseElement, Blake2b>::new(
+    let mut channel = DefaultVerifierChannel::<BaseElement, Blake2s>::new(
         proof,
         commitments,
         domain_size,
         options.folding_factor(),
     )
     .unwrap();
-    let mut coin = RandomCoin::<BaseElement, Blake2b>::new(&[]);
+    let mut coin = RandomCoin::<BaseElement, Blake2s>::new(&[]);
     let verifier = FriVerifier::new(&mut channel, &mut coin, options.clone(), max_degree).unwrap();
     let queried_evaluations = positions
         .iter()
