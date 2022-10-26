@@ -8,14 +8,14 @@ use crate::{
     trace::TracePolyTable,
     StarkDomain, Trace, TraceCommitment,
 };
-use crypto::{hashers::Blake3_256, ElementHasher, MerkleTree};
+use crypto::{hashers::Blake2s_256, ElementHasher, MerkleTree};
 use math::{
     fields::f128::BaseElement, get_power_series, get_power_series_with_offset, log2, polynom,
     FieldElement, StarkField,
 };
 use utils::collections::Vec;
 
-type Blake3 = Blake3_256<BaseElement>;
+type Blake2s = Blake2s_256<BaseElement>;
 
 #[test]
 fn new_trace_table() {
@@ -49,8 +49,8 @@ fn extend_trace_table() {
     // build extended trace commitment
     let trace_polys = trace.main_segment().interpolate_columns();
     let trace_lde = trace_polys.evaluate_columns_over(&domain);
-    let trace_tree = trace_lde.commit_to_rows::<Blake3>();
-    let trace_comm = TraceCommitment::<BaseElement, Blake3>::new(
+    let trace_tree = trace_lde.commit_to_rows::<Blake2s>();
+    let trace_comm = TraceCommitment::<BaseElement, Blake2s>::new(
         trace_lde,
         trace_tree,
         domain.trace_to_lde_blowup(),
@@ -102,8 +102,8 @@ fn commit_trace_table() {
     // build extended trace commitment
     let trace_polys = trace.main_segment().interpolate_columns();
     let trace_lde = trace_polys.evaluate_columns_over(&domain);
-    let trace_tree = trace_lde.commit_to_rows::<Blake3>();
-    let trace_comm = TraceCommitment::<BaseElement, Blake3>::new(
+    let trace_tree = trace_lde.commit_to_rows::<Blake2s>();
+    let trace_comm = TraceCommitment::<BaseElement, Blake2s>::new(
         trace_lde,
         trace_tree,
         domain.trace_to_lde_blowup(),
@@ -118,10 +118,10 @@ fn commit_trace_table() {
         for j in 0..trace_table.main_trace_width() {
             trace_state[j] = trace_table.get_main_segment().get(j, i);
         }
-        let buf = Blake3::hash_elements(&trace_state);
+        let buf = Blake2s::hash_elements(&trace_state);
         hashed_states.push(buf);
     }
-    let expected_tree = MerkleTree::<Blake3>::new(hashed_states).unwrap();
+    let expected_tree = MerkleTree::<Blake2s>::new(hashed_states).unwrap();
 
     // compare the result
     assert_eq!(*expected_tree.root(), trace_comm.main_trace_root())
