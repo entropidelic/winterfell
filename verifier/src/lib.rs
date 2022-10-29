@@ -52,7 +52,7 @@ pub use utils::{
 
 pub use crypto;
 use crypto::{
-    hashers::{Blake3_192, Blake3_256, Sha3_256, Blake2s_256},
+    hashers::{Blake2s_256, Blake3_192, Blake3_256, Sha3_256},
     ElementHasher, RandomCoin,
 };
 
@@ -93,7 +93,6 @@ pub fn verify<AIR: Air>(
     // from the prover
     let mut public_coin_seed = Vec::new();
     pub_inputs.write_into(&mut public_coin_seed);
-    proof.context.write_into(&mut public_coin_seed);
 
     // create AIR instance for the computation specified in the proof
     let air = AIR::new(proof.get_trace_info(), pub_inputs, proof.options().clone());
