@@ -4,21 +4,19 @@
 // LICENSE file in the root directory of this source tree.
 
 use super::{ByteDigest, ElementHasher, Hasher};
+use blake2::blake2s::{blake2s, Blake2s};
 use core::{convert::TryInto, fmt::Debug, marker::PhantomData};
 use math::{FieldElement, StarkField};
 use utils::ByteWriter;
-//use blake2::{Blake2s};
-//use blake2::blake2s::blake2s;
-use blake2::blake2s::{Blake2s, blake2s};
-// use blake2::as_bytes::AsBytes;
-
 
 #[cfg(test)]
 mod tests;
 
-
-fn blake2s_hash(bytes: &[u8]) ->  [u8; 32] {
-    return blake2s(32, &[], bytes).as_bytes().try_into().expect("slice with incorrect length")
+fn blake2s_hash(bytes: &[u8]) -> [u8; 32] {
+    return blake2s(32, &[], bytes)
+        .as_bytes()
+        .try_into()
+        .expect("slice with incorrect length");
 }
 
 // BLAKE2s 256-BIT OUTPUT
