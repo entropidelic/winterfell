@@ -62,7 +62,7 @@ mod channel;
 pub use channel::VerifierChannel;
 
 mod evaluator;
-use evaluator::evaluate_constraints;
+pub use evaluator::evaluate_constraints;
 
 mod composer;
 use composer::DeepComposer;
