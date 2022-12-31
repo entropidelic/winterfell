@@ -534,4 +534,4 @@ pub use prover::{
     TraceLayout, TraceTable, TraceTableFragment, TransitionConstraintDegree,
     TransitionConstraintGroup,
 };
-pub use verifier::{verify, VerifierError};
+pub use verifier::{evaluate_constraints, verify, VerifierError};
