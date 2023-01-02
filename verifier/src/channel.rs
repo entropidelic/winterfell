@@ -255,9 +255,9 @@ where
 ///
 /// Trace states for all auxiliary segments are stored in a single table.
 pub struct TraceQueries<E: FieldElement, H: ElementHasher<BaseField = E::BaseField>> {
-    query_proofs: Vec<BatchMerkleProof<H>>,
-    main_states: Table<E::BaseField>,
-    aux_states: Option<Table<E>>,
+    pub query_proofs: Vec<BatchMerkleProof<H>>,
+    pub main_states: Table<E::BaseField>,
+    pub aux_states: Option<Table<E>>,
 }
 
 impl<E: FieldElement, H: ElementHasher<BaseField = E::BaseField>> TraceQueries<E, H> {
@@ -334,8 +334,8 @@ impl<E: FieldElement, H: ElementHasher<BaseField = E::BaseField>> TraceQueries<E
 /// * Queried constraint evaluation values.
 /// * Merkle authentication paths for all queries.
 pub struct ConstraintQueries<E: FieldElement, H: ElementHasher<BaseField = E::BaseField>> {
-    query_proofs: BatchMerkleProof<H>,
-    evaluations: Table<E>,
+    pub query_proofs: BatchMerkleProof<H>,
+    pub evaluations: Table<E>,
 }
 
 impl<E: FieldElement, H: ElementHasher<BaseField = E::BaseField>> ConstraintQueries<E, H> {
