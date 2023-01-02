@@ -59,7 +59,7 @@ use crypto::{
 use fri::FriVerifier;
 
 mod channel;
-pub use channel::VerifierChannel;
+pub use channel::{ConstraintQueries, TraceQueries, VerifierChannel};
 
 mod evaluator;
 pub use evaluator::evaluate_constraints;
