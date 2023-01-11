@@ -65,7 +65,7 @@ mod evaluator;
 pub use evaluator::evaluate_constraints;
 
 mod composer;
-use composer::DeepComposer;
+pub use composer::DeepComposer;
 
 mod errors;
 pub use errors::VerifierError;

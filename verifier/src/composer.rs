@@ -12,9 +12,9 @@ use utils::collections::Vec;
 
 pub struct DeepComposer<E: FieldElement> {
     field_extension: FieldExtension,
-    cc: DeepCompositionCoefficients<E>,
-    x_coordinates: Vec<E>,
-    z: Vec<E>,
+    pub cc: DeepCompositionCoefficients<E>,
+    pub x_coordinates: Vec<E>,
+    pub z: Vec<E>,
 }
 
 impl<E: FieldElement> DeepComposer<E> {
