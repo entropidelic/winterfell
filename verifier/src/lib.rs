@@ -56,7 +56,7 @@ use crypto::{
     ElementHasher, RandomCoin,
 };
 
-use fri::FriVerifier;
+pub use fri::FriVerifier;
 
 mod channel;
 pub use channel::{ConstraintQueries, TraceQueries, VerifierChannel};
