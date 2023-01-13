@@ -336,7 +336,7 @@ impl<H: Hasher> BatchMerkleProof<H> {
 
 
 
-    pub fn into_paths(self, indexes: &[usize]) -> Result<Vec<Vec<H::Digest>>, MerkleTreeError> {
+    pub fn into_paths(&self, indexes: &[usize]) -> Result<Vec<Vec<H::Digest>>, MerkleTreeError> {
         if indexes.is_empty() {
             return Err(MerkleTreeError::TooFewLeafIndexes);
         }
