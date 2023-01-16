@@ -22,7 +22,7 @@
 #[macro_use]
 extern crate alloc;
 
-mod hash;
+pub mod hash;
 pub use hash::{Digest, ElementHasher, Hasher};
 pub mod hashers {
     //! Contains implementations of currently supported hash functions.
