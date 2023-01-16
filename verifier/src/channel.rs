@@ -30,14 +30,14 @@ pub struct VerifierChannel<
 > {
     // trace queries
     trace_roots: Vec<H::Digest>,
-    trace_queries: Option<TraceQueries<E, H>>,
+    pub trace_queries: Option<TraceQueries<E, H>>,
     // constraint queries
     constraint_root: H::Digest,
-    constraint_queries: Option<ConstraintQueries<E, H>>,
+    pub constraint_queries: Option<ConstraintQueries<E, H>>,
     // FRI proof
     fri_roots: Option<Vec<H::Digest>>,
     fri_layer_proofs: Vec<BatchMerkleProof<H>>,
-    fri_layer_queries: Vec<Vec<E>>,
+    pub fri_layer_queries: Vec<Vec<E>>,
     fri_remainder: Option<Vec<E>>,
     fri_num_partitions: usize,
     // out-of-domain frame
