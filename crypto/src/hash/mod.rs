@@ -77,7 +77,7 @@ pub trait Digest:
 // ================================================================================================
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
-pub struct ByteDigest<const N: usize>([u8; N]);
+pub struct ByteDigest<const N: usize>(pub [u8; N]);
 
 impl<const N: usize> ByteDigest<N> {
     pub fn new(value: [u8; N]) -> Self {
