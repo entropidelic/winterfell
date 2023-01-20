@@ -35,7 +35,7 @@ pub struct VerifierChannel<
     constraint_root: H::Digest,
     pub constraint_queries: Option<ConstraintQueries<E, H>>,
     // FRI proof
-    fri_roots: Option<Vec<H::Digest>>,
+    pub fri_roots: Option<Vec<H::Digest>>,
     fri_layer_proofs: Vec<BatchMerkleProof<H>>,
     pub fri_layer_queries: Vec<Vec<E>>,
     fri_remainder: Option<Vec<E>>,
