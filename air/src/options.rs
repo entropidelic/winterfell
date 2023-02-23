@@ -116,7 +116,7 @@ impl ProofOptions {
     /// * `num_queries` is zero or greater than 128.
     /// * `blowup_factor` is smaller than 4, greater than 256, or is not a power of two.
     /// * `grinding_factor` is greater than 32.
-    /// * `fri_folding_factor` is not 4, 8, or 16.
+    /// * `fri_folding_factor` is not 2, 4, 8, or 16.
     /// * `fri_max_remainder_size` is smaller than 32, greater than 1024, or is not a power of two.
     #[rustfmt::skip]
     pub fn new(
@@ -140,7 +140,7 @@ impl ProofOptions {
         assert!(grinding_factor <= 32, "grinding factor cannot be greater than 32");
 
         assert!(fri_folding_factor.is_power_of_two(), "FRI folding factor must be a power of 2");
-        assert!(fri_folding_factor >= 4, "FRI folding factor cannot be smaller than 4");
+        assert!(fri_folding_factor >= 2, "FRI folding factor cannot be smaller than 2");
         assert!(fri_folding_factor <= 16, "FRI folding factor cannot be greater than 16");
 
         assert!(fri_max_remainder_size.is_power_of_two(), "FRI max remainder size must be a power of 2");
