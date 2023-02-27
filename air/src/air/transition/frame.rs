@@ -84,7 +84,7 @@ impl<E: FieldElement> EvaluationFrame<E> for DefaultEvaluationFrame<E> {
     }
 
     fn offsets() -> &'static [usize] {
-        &[0, 1]
+        &[0, 1, 2]
     }
 }
 
@@ -94,5 +94,8 @@ impl<E: FieldElement> DefaultEvaluationFrame<E> {
     }
     pub fn next<'a>(&'a self) -> &'a [E] {
         &self.table.get_row(1)
+    }
+    pub fn next_n<'a>(&'a self, n: usize) -> &'a [E] {
+        &self.table.get_row(n)
     }
 }

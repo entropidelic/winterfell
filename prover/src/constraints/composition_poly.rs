@@ -13,7 +13,7 @@ use utils::{collections::Vec, uninit_vector};
 /// to trace_length. Thus, for example, if the composition polynomial has degree 2N - 1, where N
 /// is the trace length, it will be stored as two columns of size N (each of degree N - 1).
 pub struct CompositionPoly<E: FieldElement> {
-    data: Matrix<E>,
+    pub data: Matrix<E>,
 }
 
 impl<E: FieldElement> CompositionPoly<E> {
