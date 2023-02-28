@@ -36,6 +36,7 @@ pub enum HashFunction {
     /// BLAKE2s hash function with 256 bit output.
     ///
     /// When this function is used in the STARK protocol, proof security cannot exceed 128 bits.
+    #[allow(non_camel_case_types)]
     Blake2s_256 = 4,
 }
 

@@ -11,7 +11,7 @@ use core::marker::PhantomData;
 use crypto::{ElementHasher, RandomCoin};
 use fri::{self, FriProof};
 use math::FieldElement;
-use utils::{collections::Vec, Serializable};
+use utils::collections::Vec;
 
 #[cfg(feature = "concurrent")]
 use utils::iterators::*;

@@ -37,7 +37,6 @@
 //! also depends on the capabilities of the machine used to generate the proofs (i.e. on number
 //! of CPU cores and memory bandwidth).
 
-#![feature(generic_associated_types)]
 #![cfg_attr(not(feature = "std"), no_std)]
 
 #[cfg(not(feature = "std"))]

@@ -25,6 +25,7 @@ fn blake2s_hash(bytes: &[u8]) -> [u8; 32] {
 /// Implementation of the [Hasher](super::Hasher) trait for BLAKE2s hash function with 256-bit
 /// output.
 #[derive(Debug, PartialEq, Eq)]
+#[allow(non_camel_case_types)]
 pub struct Blake2s_256<B: StarkField>(PhantomData<B>);
 
 impl<B: StarkField> Hasher for Blake2s_256<B> {
@@ -71,6 +72,7 @@ impl<B: StarkField> ElementHasher for Blake2s_256<B> {
 /// Implementation of the [Hasher](super::Hasher) trait for BLAKE2s hash function with 192-bit
 /// output.
 #[derive(Debug, PartialEq, Eq)]
+#[allow(non_camel_case_types)]
 pub struct Blake2s_192<B: StarkField>(PhantomData<B>);
 
 impl<B: StarkField> Hasher for Blake2s_192<B> {
